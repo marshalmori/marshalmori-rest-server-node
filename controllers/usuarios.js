@@ -2,6 +2,7 @@ const { request, response } = require("express");
 const bcryptjs = require("bcryptjs");
 
 const Usuario = require("../models/usuario");
+const { emailExiste } = require("../helpers/db-validators");
 
 const usuariosGet = (req = request, res = response) => {
   const { q, nombre, apikey } = req.query;
@@ -18,13 +19,6 @@ const usuariosPost = async (req, res) => {
   const { nombre, correo, password, rol } = req.body;
   const usuario = new Usuario({ nombre, correo, password, rol });
 
-  const existeEmail = await Usuario.findOne({ correo });
-  if (existeEmail) {
-    return res.status(400).json({
-      msg: "Este e-mail já existe.",
-    });
-  }
-
   const salt = bcryptjs.genSaltSync();
   usuario.password = bcryptjs.hashSync(password, salt);
 
@@ -35,12 +29,20 @@ const usuariosPost = async (req, res) => {
   });
 };
 
-const usuariosPut = (req, res) => {
+const usuariosPut = async (req, res) => {
   const { id } = req.params;
+  const { password, google, correo, ...resto } = req.body;
+
+  if (password) {
+    const salt = bcryptjs.genSaltSync();
+    resto.password = bcryptjs.hashSync(password, salt);
+  }
+
+  const usuario = await Usuario.findByIdAndUpdate(id, resto);
 
   res.json({
     msg: "put API - controlador",
-    id,
+    usuario,
   });
 };
 
