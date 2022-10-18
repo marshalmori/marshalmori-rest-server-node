@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Sign-in</title>
+
 </head>
 
 <body>
-    <h1>Google Sign-in</h1>
+    <h1>Google Signin</h1>
     <hr>
-
 
     <div id="g_id_onload" data-client_id="166686319765-tm5jefl10r78ukuvdf9l09aqs4f7k51v.apps.googleusercontent.com"
         data-auto_prompt="false" data-callback="handleCredentialResponse">
@@ -20,24 +20,28 @@
         data-shape="rectangular" data-logo_alignment="left">
     </div>
 
-    <button id="google_signout">Signout</button>
+
 
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
+    <button id="google_signout">Signout</button>
+
     <script>
-        // let url = (window.location.hostname.includes('localhost'))
-        //     ? "http://localhost:8080/api/auth/google"
-        //     : "https://rest-api-node-marshal.herokuapp.com";
-        // console.log(url);
+
+        let url = (window.location.hostname.includes('localhost'))
+            ? "http://localhost:8080/api/auth/google"
+            : "https://rest-api-node-marshal.herokuapp.com";
 
         function handleCredentialResponse(response) {
-            // console.log('id_token', response.credential);
+
+
+
             const body = { id_token: response.credential }
 
-            fetch("https://rest-api-node-marshal.herokuapp.com", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             })
                 .then(resp => resp.json())
@@ -45,6 +49,7 @@
                     // console.log(resp);
                     localStorage.setItem('email', resp.usuario.correo)
                 }).catch(console.warn)
+
         }
 
         const button = document.getElementById('google_signout');
