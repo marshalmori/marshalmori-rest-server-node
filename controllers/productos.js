@@ -1,6 +1,5 @@
 const { response, request } = require("express");
-
-const { Producto } = require("../models");
+const Producto = require("../models/producto");
 
 // obtenerProducto - paginado - total - populate
 const obtenerProductos = async (req = request, res = response) => {
@@ -23,7 +22,7 @@ const obtenerProductos = async (req = request, res = response) => {
 };
 
 // obtenerProducto - populate {}
-const obtenerProducto = async (req, res = response) => {
+const obtenerProducto = async (req = request, res = response) => {
   const { id } = req.params;
 
   const producto = await Producto.findById(id)
@@ -33,7 +32,7 @@ const obtenerProducto = async (req, res = response) => {
   res.json(producto);
 };
 
-const crearProducto = async (req, res = response) => {
+const crearProducto = async (req = request, res = response) => {
   const { estado, usuario, ...body } = req.body;
 
   const productoDB = await Producto.findOne({ nombre: body.nombre });
@@ -60,7 +59,7 @@ const crearProducto = async (req, res = response) => {
 };
 
 // actualizarProducto
-const actualizarProducto = async (req, res = response) => {
+const actualizarProducto = async (req = request, res = response) => {
   const { id } = req.params;
   const { estado, usuario, ...data } = req.body;
 
@@ -76,7 +75,7 @@ const actualizarProducto = async (req, res = response) => {
 };
 
 // borrarCategoria  - estado:false
-const borrarProducto = async (req, res) => {
+const borrarProducto = async (req = request, res = response) => {
   const { id } = req.params;
 
   const productoBorrado = await Producto.findByIdAndUpdate(
